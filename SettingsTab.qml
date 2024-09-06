@@ -1,5 +1,6 @@
 /*
-	Copyright (C) 2019-2021 Doug McLain
+	Original Copyright (C) 2019-2021 Doug McLain
+   	Modification Copyright (C) 2024 Rohith Namboothiri
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -67,6 +68,8 @@ Item {
 	property alias modemBaudEdit: _modemBaudEdit
     property alias mmdvmBox: _mmdvmBox
     property alias debugBox: _debugBox
+    property alias ambestatus: _ambestatus
+    property alias mmdvmstatus: _mmdvmstatus
 
 	Flickable {
 		id: flickable
@@ -972,10 +975,66 @@ Item {
 			selectByMouse: true
 			inputMethodHints: "ImhPreferNumbers"
 		}
+        Text {
+               id: _ambestatus
+               x: 10
+               y: 1365 // Adjust the y position as needed
+               width: parent.width - 30
+               height: 30
+               text: qsTr("No AMBE hardware connected")
+               color: "white"
+               font.pixelSize: 14
+           }
+
+           Text {
+               id: _mmdvmstatus
+               x: 10
+               y: ambestatus.y + ambestatus.height + 4
+               width: parent.width - 30
+               height: 30
+               text: qsTr("No MMDVM connected")
+               color: "white"
+               font.pixelSize: 14
+           }
+
+
+// Buy Me a Coffee Button
+Rectangle {
+    id: buyMeCoffeeButton
+    width: 200
+    height: 30
+    color: "#FFDD00" // Color matching Buy Me a Coffee branding
+    radius: 5
+    border.color: "#333333"
+    x: 10
+    y: _mmdvmstatus.y + _mmdvmstatus.height + 6 // Place it below the _mmdvmstatus text
+
+    Text {
+        id: buttonText
+        anchors.centerIn: parent
+        text: qsTr("Buy Me a Coffee")
+        color: "#333333"
+        font.bold: true
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            Qt.openUrlExternally("https://buymeacoffee.com/rohithz")
+        }
+        onPressed: {
+            buyMeCoffeeButton.color = "#FFC700" // Slight color change on press
+        }
+        onReleased: {
+            buyMeCoffeeButton.color = "#FFDD00"
+        }
+    }
+}
+
         CheckBox {
             id: _mmdvmBox
             x: 10
-            y: 1360
+            y: 1475
             width: parent.width
             height: 25
             text: qsTr("MMDVM_DIRECT")
@@ -986,7 +1045,7 @@ Item {
         CheckBox {
             id: _debugBox
             x: 10
-            y: 1390
+            y: 1499
             width: parent.width
             height: 25
             text: qsTr("Debug output to stderr")

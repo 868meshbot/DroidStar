@@ -1,4 +1,6 @@
 QT += quick quickcontrols2 network multimedia
+//QT += xlsx
+
 
 unix:!ios:QT += serialport
 win32:QT += serialport
@@ -32,7 +34,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         CRCenc.cpp \
-        Golay24128.cpp \
+        vuidupdater.cpp \
+        LogHandler.cpp \
+       Golay24128.cpp \
         M17Convolution.cpp \
         SHA256.cpp \
         YSFConvolution.cpp \
@@ -83,7 +87,7 @@ android:SOURCES += androidserialport.cpp
 macx:OBJECTIVE_SOURCES += micpermission.mm
 ios:OBJECTIVE_SOURCES += micpermission.mm
 
-resources.files = main.qml AboutTab.qml HostsTab.qml LogTab.qml MainTab.qml SettingsTab.qml
+resources.files = main.qml AboutTab.qml HostsTab.qml LogTab.qml MainTab.qml SettingsTab.qml fontawesome-webfont.ttf QsoTab.qml
 resources.prefix = /$${TARGET}
 RESOURCES += resources
 
@@ -101,7 +105,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
 	CRCenc.h \
 	DMRDefines.h \
-	Golay24128.h \
+	vuidupdater.h \
+	LogHandler.h \
+     Golay24128.h \
 	M17Convolution.h \
 	M17Defines.h \
 	MMDVMDefines.h \
@@ -202,7 +208,11 @@ android:HEADERS += androidserialport.h
 macx:HEADERS += micpermission.h
 !ios:HEADERS += serialambe.h serialmodem.h
 android:ANDROID_VERSION_CODE = 79
-android:QT_ANDROID_MIN_SDK_VERSION = 31
+#android:QT_ANDROID_MIN_SDK_VERSION = 31
+
+android:QT_ANDROID_MIN_SDK_VERSION = 21  # Set the minimum SDK version here
+android:QT_ANDROID_TARGET_SDK_VERSION = 30  # Set the target SDK version here
+
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
 	ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
@@ -218,3 +228,7 @@ contains(DEFINES, USE_FLITE){
 contains(DEFINES, USE_MD380_VOCODER){
 	LIBS += -lmd380_vocoder -Xlinker --section-start=.firmware=0x0800C000 -Xlinker  --section-start=.sram=0x20000000
 }
+
+DISTFILES += \
+    android/AndroidManifest.xml
+android: include(C:/Users/rohith/android_openssl/android_openssl-master/openssl.pri)

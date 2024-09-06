@@ -1,5 +1,6 @@
 /*
-	Copyright (C) 2019-2021 Doug McLain
+	Original Copyright (C) 2019-2021 Doug McLain
+    Modification Copyright (C) 2024 Rohith Namboothiri
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -15,43 +16,75 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import QtQuick
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Item {
-	id: aboutTab
-	Rectangle{
-		id: helpText
-		x: 20
-		y: 20
-		width: parent.width - 40
-		height: parent.height - 40
-		color: "#252424"
-		Flickable{
-			anchors.fill: parent
-			contentWidth: parent.width
-			contentHeight: aboutText.y + aboutText.height
-			flickableDirection: Flickable.VerticalFlick
-			clip: true
-			Text {
-				id: aboutText
-				width: helpText.width
-				wrapMode: Text.WordWrap
-				color: "white"
-				text: qsTr(	"\nDROID-Star git build " + droidstar.get_software_build() +
-						   "\nPlatform:\t" + droidstar.get_platform() +
-						   "\nArchitecture:\t" + droidstar.get_arch() +
-						   "\nBuild ABI:\t" + droidstar.get_build_abi() +
-						   "\n\nProject page: https://github.com/nostar/DroidStar" +
-						   "\n\nCopyright (C) 2019-2021 Doug McLain AD8DP\n" +
-							"This program is free software; " +
-							"you can redistribute it and/or modify it under the terms of the GNU General " +
-							"Public License as published by the Free Software Foundation; version 2.\n\n" +
-							"This program is distributed in the hope that it will be useful, but WITHOUT " +
-							"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS " +
-							"FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\n" +
-							"You should have received a copy of the GNU General Public License along with this " +
-							"program. If not, see <http://www.gnu.org/licenses/>")
-			}
-		}
-	}
+    id: aboutTab
+
+    Rectangle {
+        id: helpText
+        anchors.fill: parent
+        color: "#252424"
+
+        Flickable {
+            id: flickable
+            anchors.fill: parent
+            contentWidth: parent.width
+            contentHeight: aboutText.height + buyMeCoffeeButton.height + 20 // Adjusted content height
+            flickableDirection: Flickable.VerticalFlick
+            clip: true
+
+            Text {
+                id: aboutText
+                width: parent.width - 40
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                wrapMode: Text.WordWrap
+                color: "white"
+                text: qsTr("\nDROID-Star git build " + droidstar.get_software_build() +
+                           "\nPlatform:\t" + droidstar.get_platform() +
+                           "\nArchitecture:\t" + droidstar.get_arch() +
+                           "\nBuild ABI:\t" + droidstar.get_build_abi() +
+                           "\n\nProject page: https://github.com/nostar/DroidStar" +
+                           "\n\nOriginal Copyright (C) 2019-2021 Doug McLain AD8DP\n" +
+                           "\n\nModification Copyright (C) 2024 Rohith Namboothiri VU3LVO\n" +
+                           "\n\nThis customized iOS/Android version, built and distributed by VU3LVO, is specifically designed for use by a select group and is not intended for public use at the moment.")
+            }
+
+            // Buy Me a Coffee Button - This contribution will help me pay for the Apple developer program and keep iOS app live. 
+            Rectangle {
+                id: buyMeCoffeeButton
+                width: 200
+                height: 50
+                color: "#FFDD00" // Color matching Buy Me a Coffee branding
+                radius: 10
+                border.color: "#333333"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: aboutText.bottom
+                anchors.topMargin: 20 // Space between text and button
+
+                Text {
+                    id: buttonText
+                    anchors.centerIn: parent
+                    text: qsTr("Buy Me a Coffee")
+                    color: "#333333"
+                    font.bold: true
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        Qt.openUrlExternally("https://buymeacoffee.com/rohithz")
+                    }
+                    onPressed: {
+                        buyMeCoffeeButton.color = "#FFC700" // Slight color change on press
+                    }
+                    onReleased: {
+                        buyMeCoffeeButton.color = "#FFDD00"
+                    }
+                }
+            }
+        }
+    }
 }

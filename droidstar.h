@@ -1,5 +1,6 @@
 /*
-	Copyright (C) 2019-2021 Doug McLain
+	Original Copyright (C) 2019-2021 Doug McLain
+	Modification Copyright (C) 2024 Rohith Namboothiri
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,18 +20,46 @@
 #define DROIDSTAR_H
 
 #include <QObject>
+
 #include "mode.h"
+#include "dmr.h"
+//#include "vuidupdater.h"  // Ensure SignalEmitter is properly included
+
 
 class DroidStar : public QObject
 {
-	Q_OBJECT
-	//Q_PROPERTY(QString mode READ mode WRITE set_mode NOTIFY mode_changed)
+    Q_OBJECT  
+    //Q_PROPERTY(QString mode READ mode WRITE set_mode NOTIFY mode_changed)
+   
+   
 public:
-	explicit DroidStar(QObject *parent = nullptr);
-	~DroidStar();
+    
+    
+  explicit DroidStar(QObject *parent = nullptr);
+  
+    ~DroidStar();
+/*
+    Q_INVOKABLE void fetchFirstNameFromDMR(unsigned int srcid);
+    Q_INVOKABLE  void onNetworkReply(QNetworkReply* reply);
+   // void fetchFirstNameFromDMR(unsigned int srcid, VUIDUpdater *updater);
 
+    Q_INVOKABLE  QString firstName() const { return m_firstName; }
+   
+     //Q_INVOKABLE QString firstName() const; */
+    
+
+    Q_INVOKABLE void addRecentTGID(const QString& tgid);
+    Q_INVOKABLE QStringList loadRecentTGIDs() const;
+    Q_INVOKABLE void clearRecentTGIDs();  // Add this line to make it invokable from QML
+
+   
+  
+    
 signals:
 	void input_source_changed(int, QString);
+    void tgidsUpdated(const QStringList& newTgids);
+    void recentTgidsUpdated(); // Optional signal if needed to notify QML
+    //void firstNameReceived(const QString& firstName);  // Declare the signal here
 	void mode_changed();
 	void module_changed(char);
 	void slot_changed(int);
@@ -63,8 +92,10 @@ signals:
     void dst_changed(QString);
     void debug_changed(bool);
     void update_devices();
+    
 public slots:
-	void set_callsign(const QString &callsign) {  m_callsign = callsign.simplified(); save_settings(); }
+   
+    void set_callsign(const QString &callsign) {  m_callsign = callsign.simplified(); save_settings(); }
 	void set_dmrtgid(const QString &dmrtgid) { m_dmr_destid = dmrtgid.simplified().toUInt(); save_settings(); }
 	void set_slot(const int slot) {emit slot_changed(slot); }
 	void set_cc(const int cc) {emit cc_changed(cc); }
@@ -151,6 +182,7 @@ public slots:
 	void process_host_change(const QString &h);
 	void dtmf_send_clicked(QString);
 	bool get_modelchange(){ return m_modelchange; }
+   // QString firstName() { return m_firstName; }
 	QString get_label1() { return m_label1; }
 	QString get_label2() { return m_label2; }
 	QString get_label3() { return m_label3; }
@@ -254,7 +286,10 @@ public slots:
 private:
 	int connect_status;
 	bool m_update_host_files;
-	QSettings *m_settings;
+    	QStringList recentTGIDs; 
+ 	QObject *m_mainTab;
+    	unsigned int lastSrcId;
+        QSettings *m_settings;
 	QString config_path;
 	QString hosts_filename;
 	QString m_callsign;
